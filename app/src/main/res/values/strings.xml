@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">VLRP-android</string>
+    <string name="filter_by">Filter By</string>
+
+    <string-array name="filter_array">
+        <item >None</item>
+        <item>Closest</item>
+    </string-array>
+</resources>
