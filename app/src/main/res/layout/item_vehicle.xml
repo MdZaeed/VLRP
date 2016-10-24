@@ -2,16 +2,56 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@color/lightGray"
+    android:layout_margin="5dp">
 
-    <TextView
-        android:id="@+id/tv_vehicle_name"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Mock name"/>
+        android:background="@android:color/transparent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Mock driver name" />
+        <TextView
+            android:id="@+id/tv_vehicle_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Mock name"/>
+
+        <TextView
+            android:id="@+id/tv_driver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mock driver name"
+            android:layout_below="@id/tv_vehicle_name"/>
+
+        <TextView
+            android:id="@+id/tv_routes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mock Routes"
+            android:layout_below="@id/tv_driver_name" />
+
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_routes"
+            android:text="Status" />
+
+        <TextView
+            android:id="@+id/tv_university"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mock University"
+            android:layout_below="@id/tv_status"/>
+
+        <Button
+            android:id="@+id/btn_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MAPVIEW"
+            android:layout_below="@id/tv_university"
+            android:background="?attr/selectableItemBackground"/>
+    </RelativeLayout>
+
 </android.support.v7.widget.CardView>

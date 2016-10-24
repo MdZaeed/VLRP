@@ -34,6 +34,7 @@
         android:imeOptions="actionDone"/>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/rclv_vehicle_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/et_search_box"/>
