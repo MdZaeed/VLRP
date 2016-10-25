@@ -1,9 +1,12 @@
 <resources>
     <string name="app_name">VLRP-android</string>
     <string name="filter_by">Filter By</string>
+    <string name="google_maps_key" >
+    AIzaSyCH3Q_5rZFrpvh8hfagv7woqq1xuZYqbjA
+    </string>
 
     <string-array name="filter_array">
-        <item >None</item>
-        <item>Closest</item>
+        <item>None</item>
+        <item>Favorites</item>
     </string-array>
 </resources>

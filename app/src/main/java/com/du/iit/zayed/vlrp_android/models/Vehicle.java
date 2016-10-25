@@ -1,10 +1,13 @@
 
 package com.du.iit.zayed.vlrp_android.models;
 
+import com.du.iit.zayed.vlrp_android.Utils.Tools;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Vehicle {
+import java.io.Serializable;
+
+public class Vehicle implements Serializable {
 
     @SerializedName("id")
     @Expose
@@ -24,6 +27,9 @@ public class Vehicle {
     @SerializedName("universityName")
     @Expose
     private String universityName;
+    @SerializedName("isFavorite")
+    @Expose
+    private String isFavorite;
 
     /**
      * 
@@ -135,11 +141,20 @@ public class Vehicle {
 
     public void mockDataFiller(int serial)
     {
-        id="id : " + serial;
-        vehicleName="vehicle : " + serial;
-        driverName="Samrat : " + serial;
-        routes="Sahidullah : " + serial;
-        activeTime="Active Time" + serial;
-        universityName="University : " + serial;
+        id="" + serial;
+        vehicleName="Vehicle name : " + Tools.vehicleNames[serial];
+        driverName="Driver name : " + Tools.driverNames[serial];
+        routes="Routes : " + Tools.routes[serial];
+        activeTime="Status : " + Tools.activeTimes[serial];
+        universityName="University : " + Tools.universityNames[serial];
+        isFavorite=Tools.booleanStrings[serial%2];
+    }
+
+    public String getIsFavorite() {
+        return isFavorite;
+    }
+
+    public void setIsFavorite(String isFavorite) {
+        this.isFavorite = isFavorite;
     }
 }

@@ -19,28 +19,14 @@ import java.util.ArrayList;
  */
 public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewListAdapter.VehicleViewHolder>{
 
-    ArrayList<Vehicle> vehicles;
+    private ArrayList<Vehicle> vehicles;
     Context context;
+    private OnVehicleElementClicked onVehicleElementClicked;
 
     public RecyclerViewListAdapter(Context context,ArrayList<Vehicle> vehicles)
     {
         this.context=context;
-        this.vehicles=vehicles;
-
-        if(vehicles.equals(null))
-        {
-            fillUpWithMockData();
-        }
-    }
-
-    private void fillUpWithMockData() {
-
-        for (int i=0;i<5;i++)
-        {
-            Vehicle vehicle= new Vehicle();
-            vehicle.mockDataFiller(i);
-            vehicles.add(vehicle);
-        }
+        this.setVehicles(vehicles);
     }
 
     @Override
@@ -62,12 +48,28 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
 
     @Override
     public int getItemCount() {
-        return vehicles.size();
+        return getVehicles().size();
     }
 
     public Vehicle getItem(int position)
     {
-        return vehicles.get(position);
+        return getVehicles().get(position);
+    }
+
+    public OnVehicleElementClicked getOnVehicleElementClicked() {
+        return onVehicleElementClicked;
+    }
+
+    public void setOnVehicleElementClicked(OnVehicleElementClicked onVehicleElementClicked) {
+        this.onVehicleElementClicked = onVehicleElementClicked;
+    }
+
+    public ArrayList<Vehicle> getVehicles() {
+        return vehicles;
+    }
+
+    public void setVehicles(ArrayList<Vehicle> vehicles) {
+        this.vehicles = vehicles;
     }
 
     public class VehicleViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -94,7 +96,12 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
 
         @Override
         public void onClick(View view) {
-
+            onVehicleElementClicked.onVehicleClicked(getItem(getAdapterPosition()));
         }
+    }
+
+    public interface OnVehicleElementClicked
+    {
+        void onVehicleClicked(Vehicle vehicle);
     }
 }

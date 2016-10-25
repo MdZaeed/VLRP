@@ -14,14 +14,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/filter_by"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:gravity="center_vertical"
+        android:layout_alignTop="@+id/sp_filter_spinner"
+        android:layout_alignBottom="@id/sp_filter_spinner"/>
 
     <Spinner
+        android:id="@+id/sp_filter_spinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/tv_filter"
         android:layout_toEndOf="@id/tv_filter"
-        android:entries="@array/filter_array"/>
+        android:entries="@array/filter_array"
+        android:layout_marginLeft="30dp"
+        android:layout_marginStart="30dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"/>
 
     <EditText
         android:id="@+id/et_search_box"
