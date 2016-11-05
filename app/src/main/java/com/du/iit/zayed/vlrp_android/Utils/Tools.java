@@ -22,4 +22,6 @@ public class Tools {
 
     public static final String[] booleanStrings=
             {"true","false"};
+
+    public static String AuthToken="";
 }

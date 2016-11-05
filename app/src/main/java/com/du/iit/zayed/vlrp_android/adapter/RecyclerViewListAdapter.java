@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.du.iit.zayed.vlrp_android.R;
 import com.du.iit.zayed.vlrp_android.models.Vehicle;
+import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
 
 import java.util.ArrayList;
 
@@ -19,11 +20,11 @@ import java.util.ArrayList;
  */
 public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewListAdapter.VehicleViewHolder>{
 
-    private ArrayList<Vehicle> vehicles;
+    private ArrayList<VehicleResponse> vehicles;
     Context context;
     private OnVehicleElementClicked onVehicleElementClicked;
 
-    public RecyclerViewListAdapter(Context context,ArrayList<Vehicle> vehicles)
+    public RecyclerViewListAdapter(Context context,ArrayList<VehicleResponse> vehicles)
     {
         this.context=context;
         this.setVehicles(vehicles);
@@ -37,9 +38,9 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
 
     @Override
     public void onBindViewHolder(VehicleViewHolder holder, int position) {
-        Vehicle tempVehicle=getItem(position);
+        VehicleResponse tempVehicle=getItem(position);
 
-        holder.vehicleNameTextView.setText(tempVehicle.getVehicleName());
+        holder.vehicleNameTextView.setText("Noooooo");
         holder.driverNameTextView.setText(tempVehicle.getDriverName());
         holder.routesTextView.setText(tempVehicle.getRoutes());
         holder.universityTextView.setText(tempVehicle.getUniversityName());
@@ -51,7 +52,7 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
         return getVehicles().size();
     }
 
-    public Vehicle getItem(int position)
+    public VehicleResponse getItem(int position)
     {
         return getVehicles().get(position);
     }
@@ -64,11 +65,11 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
         this.onVehicleElementClicked = onVehicleElementClicked;
     }
 
-    public ArrayList<Vehicle> getVehicles() {
+    public ArrayList<VehicleResponse> getVehicles() {
         return vehicles;
     }
 
-    public void setVehicles(ArrayList<Vehicle> vehicles) {
+    public void setVehicles(ArrayList<VehicleResponse> vehicles) {
         this.vehicles = vehicles;
     }
 
@@ -102,6 +103,6 @@ public class RecyclerViewListAdapter extends RecyclerView.Adapter<RecyclerViewLi
 
     public interface OnVehicleElementClicked
     {
-        void onVehicleClicked(Vehicle vehicle);
+        void onVehicleClicked(VehicleResponse vehicle);
     }
 }

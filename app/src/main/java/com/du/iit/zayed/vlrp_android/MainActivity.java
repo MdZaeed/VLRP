@@ -11,17 +11,28 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
+import com.du.iit.zayed.vlrp_android.Utils.Tools;
+import com.du.iit.zayed.vlrp_android.adapter.ApiAdapter;
 import com.du.iit.zayed.vlrp_android.adapter.RecyclerViewListAdapter;
 import com.du.iit.zayed.vlrp_android.models.Vehicle;
+import com.du.iit.zayed.vlrp_android.models.VehicleListResponse;
+import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewListAdapter.OnVehicleElementClicked{
 
     RecyclerView vehicleRecyclerView;
-    ArrayList<Vehicle> vehicles;
-    ArrayList<Vehicle> filteredResult;
+    ArrayList<VehicleResponse> vehicles;
+    ArrayList<VehicleResponse> filteredResult;
     EditText searchEditText;
     RecyclerViewListAdapter recyclerViewListAdapter;
     Spinner filterSpinner;
@@ -35,16 +46,31 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewListA
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        vehicles=new ArrayList<>();
-        filteredResult=new ArrayList<>();
-        fillUpWithMockData(vehicles);
+        ApiAdapter apiAdapter=new ApiAdapter();
+        Call<List<VehicleResponse>> call=apiAdapter.vlrpApi.getAllVehicle(Tools.AuthToken);
+        call.enqueue(new Callback<List<VehicleResponse>>() {
+            @Override
+            public void onResponse(Response<List<VehicleResponse>> response, Retrofit retrofit) {
+                vehicles=new ArrayList<>(response.body());
+                filteredResult=new ArrayList<>();
 
-        vehicleRecyclerView=(RecyclerView) findViewById(R.id.rclv_vehicle_list);
-        recyclerViewListAdapter=new RecyclerViewListAdapter(this, vehicles);
-        recyclerViewListAdapter.setOnVehicleElementClicked(this);
-        vehicleRecyclerView.setAdapter(recyclerViewListAdapter);
-        vehicleRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                vehicleRecyclerView=(RecyclerView) findViewById(R.id.rclv_vehicle_list);
+                recyclerViewListAdapter=new RecyclerViewListAdapter(MainActivity.this, vehicles);
+                recyclerViewListAdapter.setOnVehicleElementClicked(MainActivity.this);
+                vehicleRecyclerView.setAdapter(recyclerViewListAdapter);
+                vehicleRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                initializeViews();
+            }
 
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(MainActivity.this,"Failed",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void initializeViews()
+    {
         searchEditText =(EditText) findViewById(R.id.et_search_box);
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -94,12 +120,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewListA
 
     private void filterResultsByString(String searchString) {
         filteredResult=new ArrayList<>();
-        for (Vehicle vehicle :
+        for (VehicleResponse vehicle :
                 vehicles) {
-            if (vehicle.getVehicleName().toLowerCase().contains(searchString.toLowerCase()))
+/*            if (vehicle.getVehicleName().toLowerCase().contains(searchString.toLowerCase()))
             {
                 filteredResult.add(vehicle);
-            }else if(vehicle.getRoutes().toLowerCase().contains(searchString.toLowerCase()))
+            }else */
+            if(vehicle.getRoutes().toLowerCase().contains(searchString.toLowerCase()))
             {
                 filteredResult.add(vehicle);
             }else if(vehicle.getDriverName().toLowerCase().contains(searchString.toLowerCase()))
@@ -114,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewListA
 
     private void filterResultsByFavorites() {
         filteredResult=new ArrayList<>();
-        for (Vehicle vehicle :
+        for (VehicleResponse vehicle :
                 vehicles) {
             if (vehicle.getIsFavorite().toLowerCase().contains("true"))
             {
@@ -137,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewListA
     }
 
     @Override
-    public void onVehicleClicked(Vehicle vehicle) {
+    public void onVehicleClicked(VehicleResponse vehicle) {
         Intent intent=new Intent(this,MapViewActivity.class);
         intent.putExtra(PASSED_OBJECT,vehicle);
         startActivity(intent);
