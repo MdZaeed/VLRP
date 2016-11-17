@@ -1,5 +1,6 @@
 package com.du.iit.zayed.vlrp_android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.du.iit.zayed.vlrp_android.Utils.Tools;
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText usernameEditText;
     EditText passwordEditText;
     Button submitButton;
+    TextView registerTextView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,8 +47,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         usernameEditText=(EditText) findViewById(R.id.et_username);
         passwordEditText=(EditText) findViewById(R.id.et_password);
         submitButton=(Button) findViewById(R.id.btn_login);
+        registerTextView=(TextView) findViewById(R.id.tv_redirect_to_register);
 
         submitButton.setOnClickListener(this);
+        registerTextView.setOnClickListener(this);
     }
 
     @Override
@@ -79,6 +84,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     }
                 });
                 break;
+
+            case R.id.tv_redirect_to_register:
+                gotoActivity(new RegisterActivity());
+                break;
         }
+    }
+
+    public void gotoActivity(AppCompatActivity appCompatActivity)
+    {
+        Intent intent=new Intent(this,appCompatActivity.getClass());
+        startActivity(intent);
     }
 }

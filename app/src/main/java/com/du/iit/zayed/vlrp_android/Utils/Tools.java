@@ -1,5 +1,11 @@
 package com.du.iit.zayed.vlrp_android.Utils;
 
+import android.content.Context;
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
+
+import com.du.iit.zayed.vlrp_android.MainActivity;
+
 /**
  * Created by Zayed on 25-Oct-16.
  */
