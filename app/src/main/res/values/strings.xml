@@ -4,6 +4,8 @@
     <string name="google_maps_key" >
     AIzaSyCH3Q_5rZFrpvh8hfagv7woqq1xuZYqbjA
     </string>
+
+    <string name="new_map_key">AIzaSyD1ADb5vO2elX0KvE9Gb_habjOwe4nFxdA</string>
     <string name="full_name">Full name</string>
     <string name="department">Department</string>
     <string name="institute">Institute</string>

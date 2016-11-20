@@ -65,6 +65,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewListA
             @Override
             public void onFailure(Throwable t) {
                 Toast.makeText(MainActivity.this,"Failed",Toast.LENGTH_LONG).show();
+
+                vehicles=new ArrayList<>(Tools.getMockVehicleResposnse());
+                filteredResult=new ArrayList<>();
+
+                vehicleRecyclerView=(RecyclerView) findViewById(R.id.rclv_vehicle_list);
+                recyclerViewListAdapter=new RecyclerViewListAdapter(MainActivity.this, vehicles);
+                recyclerViewListAdapter.setOnVehicleElementClicked(MainActivity.this);
+                vehicleRecyclerView.setAdapter(recyclerViewListAdapter);
+                vehicleRecyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                initializeViews();
             }
         });
     }

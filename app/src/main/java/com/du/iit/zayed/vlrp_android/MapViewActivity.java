@@ -1,10 +1,12 @@
 package com.du.iit.zayed.vlrp_android;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,12 +15,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.du.iit.zayed.vlrp_android.Api.DirectionApi;
 import com.du.iit.zayed.vlrp_android.Utils.Tools;
 import com.du.iit.zayed.vlrp_android.adapter.ApiAdapter;
+import com.du.iit.zayed.vlrp_android.adapter.DirectionApiAdapter;
 import com.du.iit.zayed.vlrp_android.adapter.RecyclerViewListAdapter;
+import com.du.iit.zayed.vlrp_android.models.DirectionResponse;
 import com.du.iit.zayed.vlrp_android.models.FavoritesModel;
 import com.du.iit.zayed.vlrp_android.models.LocationResponse;
 import com.du.iit.zayed.vlrp_android.models.LoginResponse;
+import com.du.iit.zayed.vlrp_android.models.Step;
 import com.du.iit.zayed.vlrp_android.models.Vehicle;
 import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +36,9 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.PolyUtil;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +63,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     TextView universityTextView;
     Button mapViewButton;
     ApiAdapter apiAdapter;
+    DirectionApiAdapter directionApiAdapter;
 
     ArrayList<LocationResponse> locationResponses;
 
@@ -68,6 +78,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         apiAdapter=new ApiAdapter();
+        directionApiAdapter=new DirectionApiAdapter();
 
         Intent intent=getIntent();
         passedVehicle=(VehicleResponse) intent.getSerializableExtra(MainActivity.PASSED_OBJECT);
@@ -103,6 +114,15 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mapView.onResume();
         this.googleMap=googleMap;
+
+        getLocationData();
+        googleMap.getUiSettings().setAllGesturesEnabled(true);
+        googleMap.setOnMarkerClickListener(null);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    public void getLocationData()
+    {
         Call<List<LocationResponse>> call=apiAdapter.vlrpApi.getLocation(Integer.parseInt(passedVehicle.getVehicleId()));
         call.enqueue(new Callback<List<LocationResponse>>() {
             @Override
@@ -124,11 +144,51 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onFailure(Throwable t) {
                 Toast.makeText(MapViewActivity.this,"Failed",Toast.LENGTH_LONG).show();
+
+                LatLng Dhaka=new LatLng(23.728560,90.400099);
+                setMarker(Dhaka);
+
+                drawRoutes();
+
             }
         });
-        googleMap.getUiSettings().setAllGesturesEnabled(true);
-        googleMap.setOnMarkerClickListener(null);
-        googleMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    public void drawRoutes()
+    {
+        Call<DirectionResponse> call=directionApiAdapter.directionApi.getAllVehicle("23.732527,90.395915","23.728208,90.403607",getString(R.string.new_map_key));
+        call.enqueue(new Callback<DirectionResponse>() {
+            @Override
+            public void onResponse(Response<DirectionResponse> response, Retrofit retrofit) {
+                DirectionResponse directionResponse=response.body();
+                List<Step> steps=directionResponse.getRoutes().get(0).getLegs().get(0).getSteps();
+/*                googleMap.addPolyline(new PolylineOptions()
+                        .addAll(PolyUtil.decode(directionResponse.getRoutes().get(0).getLegs().get(0).getSteps().get(0).getPolyline().getPoints()))
+                        .width(5)
+                        .color(Color.RED));*/
+                drawLinesFromSteps(steps);
+                Log.d("Yes",response.body().toString());
+                int i=0;
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(MapViewActivity.this,"Failed again",Toast.LENGTH_LONG).show();
+                t.printStackTrace();
+
+            }
+        });
+    }
+    
+    public void drawLinesFromSteps(List<Step> steps)
+    {
+        for (Step step :
+                steps) {
+            googleMap.addPolyline(new PolylineOptions()
+                    .addAll(PolyUtil.decode(step.getPolyline().getPoints()))
+                    .width(5)
+                    .color(Color.RED));
+        }
     }
 
     private void setMarker(LatLng marker)

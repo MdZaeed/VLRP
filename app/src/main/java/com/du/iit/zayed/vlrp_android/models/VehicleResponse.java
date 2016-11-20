@@ -7,6 +7,17 @@ import java.io.Serializable;
 
 public class VehicleResponse implements Serializable{
 
+    public VehicleResponse(String id,String driverName,String routes,String activeTime,String universityName,String vehicleId, String isFavorite)
+    {
+        this.id=id;
+        this.driverName=driverName;
+        this.routes=routes;
+        this.activeTime=activeTime;
+        this.universityName=universityName;
+        this.vehicleId=vehicleId;
+        this.isFavorite=isFavorite;
+    }
+
     @SerializedName("Id")
     @Expose
     private String id;

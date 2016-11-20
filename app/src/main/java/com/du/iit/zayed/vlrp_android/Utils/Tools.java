@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
 import com.du.iit.zayed.vlrp_android.MainActivity;
+import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Zayed on 25-Oct-16.
@@ -30,4 +34,19 @@ public class Tools {
             {"true","false"};
 
     public static String AuthToken="pe2fEBQ5Fv7pMQBln8JcDaqkICS9aum7Fj2LeVw+Zpa7MBwlUOZkXSIzQ6ZutY7mv0TWT7a7+vpE8XquusuXAoJNQAAOZYv4O1wUyWpEqsjN+zxql6HPvqXmhy2t5BDs";
+
+    public static List<VehicleResponse> getMockVehicleResposnse()
+    {
+        List<VehicleResponse> vehicleResponses=new ArrayList<>();
+
+        for(int i=0;i<5;i++)
+        {
+            VehicleResponse vehicleResponse=new VehicleResponse(i+"","Driver " + i,
+                    "Routes " + i,"Status " + i,"University " + i, i+"","true");
+            vehicleResponses.add(vehicleResponse);
+        }
+
+
+        return vehicleResponses;
+    }
 }
