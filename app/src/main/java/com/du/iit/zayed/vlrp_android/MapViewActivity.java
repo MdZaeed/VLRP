@@ -13,9 +13,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.du.iit.zayed.vlrp_android.Utils.Tools;
 import com.du.iit.zayed.vlrp_android.adapter.ApiAdapter;
 import com.du.iit.zayed.vlrp_android.adapter.RecyclerViewListAdapter;
+import com.du.iit.zayed.vlrp_android.models.FavoritesModel;
 import com.du.iit.zayed.vlrp_android.models.LocationResponse;
+import com.du.iit.zayed.vlrp_android.models.LoginResponse;
 import com.du.iit.zayed.vlrp_android.models.Vehicle;
 import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -26,6 +29,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +53,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     TextView statusTextView;
     TextView universityTextView;
     Button mapViewButton;
+    ApiAdapter apiAdapter;
 
     ArrayList<LocationResponse> locationResponses;
 
@@ -61,6 +66,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        apiAdapter=new ApiAdapter();
 
         Intent intent=getIntent();
         passedVehicle=(VehicleResponse) intent.getSerializableExtra(MainActivity.PASSED_OBJECT);
@@ -94,10 +101,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mapView.onResume();
         this.googleMap=googleMap;
-        ApiAdapter apiAdapter=new ApiAdapter();
         Call<List<LocationResponse>> call=apiAdapter.vlrpApi.getLocation(Integer.parseInt(passedVehicle.getVehicleId()));
         call.enqueue(new Callback<List<LocationResponse>>() {
             @Override
@@ -205,12 +210,14 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             case R.id.menu_item_favorite:
                 if(passedVehicle.getIsFavorite().toLowerCase().equals("false"))
                 {
-                    item.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_on));
-                    passedVehicle.setIsFavorite("true");
+                    addFavorites(item);
+/*                    item.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                    passedVehicle.setIsFavorite("true");*/
                 }else if(passedVehicle.getIsFavorite().toLowerCase().equals("true"))
                 {
-                    item.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_off));
-                    passedVehicle.setIsFavorite("false");
+                    removeFavorites(item);
+/*                    item.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+                    passedVehicle.setIsFavorite("false");*/
                 }
                 break;
 
@@ -219,5 +226,51 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void addFavorites(final MenuItem menuItem)
+    {
+        Call<LoginResponse> call=apiAdapter.vlrpApi.addFavorites(Tools.AuthToken,new FavoritesModel(passedVehicle.getVehicleId()));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                if(response.isSuccess())
+                {
+                    menuItem.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_on));
+                    passedVehicle.setIsFavorite("true");
+                } else
+                {
+                    Toast.makeText(MapViewActivity.this,"Sorry Cannot change right now",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(MapViewActivity.this,"Failed, Try Later!!!",Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    public void removeFavorites(final MenuItem menuItem)
+    {
+        Call<LoginResponse> call=apiAdapter.vlrpApi.removeFavorites(Tools.AuthToken,new FavoritesModel(passedVehicle.getVehicleId()));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                if(response.isSuccess())
+                {
+                    menuItem.setIcon(getResources().getDrawable(android.R.drawable.btn_star_big_off));
+                    passedVehicle.setIsFavorite("false");
+                } else
+                {
+                    Toast.makeText(MapViewActivity.this,"Sorry Cannot change right now",Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(MapViewActivity.this,"Failed, Try later!!!",Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

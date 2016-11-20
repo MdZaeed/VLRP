@@ -19,11 +19,14 @@
         <activity android:name=".MapViewActivity"/>
 
         <activity android:name=".LoginActivity"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:windowSoftInputMode="stateHidden"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name=".SplashScreenActivity">
+
+            <intent-filter>
+            <action android:name="android.intent.action.MAIN" />
+
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

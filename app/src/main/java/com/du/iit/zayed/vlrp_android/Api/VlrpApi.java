@@ -1,5 +1,6 @@
 package com.du.iit.zayed.vlrp_android.Api;
 
+import com.du.iit.zayed.vlrp_android.models.FavoritesModel;
 import com.du.iit.zayed.vlrp_android.models.LocationResponse;
 import com.du.iit.zayed.vlrp_android.models.LoginPost;
 import com.du.iit.zayed.vlrp_android.models.LoginResponse;
@@ -22,9 +23,15 @@ public interface VlrpApi {
     @GET("/api/Vehicles")
     Call<List<VehicleResponse>> getAllVehicle(@Header("Auth-key") String authuytr);
 
-    @GET("/api/getlocation")
+    @GET("/api/location")
     Call<List<LocationResponse>> getLocation(@Query("id") int id);
 
     @POST("/api/login")
     Call<LoginResponse> login(@Body LoginPost loginPost);
+
+    @POST("/api/addfavorites")
+    Call<LoginResponse> addFavorites(@Header("Auth-key") String authkey,@Body FavoritesModel favoritesModel);
+
+    @POST("/api/removefavorites")
+    Call<LoginResponse> removeFavorites(@Header("Auth-key") String authkey,@Body FavoritesModel favoritesModel);
 }
