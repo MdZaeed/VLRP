@@ -16,6 +16,7 @@ public class VehicleResponse implements Serializable{
         this.universityName=universityName;
         this.vehicleId=vehicleId;
         this.isFavorite=isFavorite;
+        this.routesCoords="23.728158,90.403263;23.732696,90.395216;23.732401,90.385088;23.764137,90.370809";
     }
 
     @SerializedName("Id")
@@ -39,6 +40,9 @@ public class VehicleResponse implements Serializable{
     @SerializedName("IsFavorite")
     @Expose
     private String isFavorite;
+    @SerializedName("RouteCoords")
+    @Expose
+    private String routesCoords;
 
     /**
      * 
@@ -144,5 +148,13 @@ public class VehicleResponse implements Serializable{
 
     public void setVehicleId(String vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public String getRoutesCoords() {
+        return routesCoords;
+    }
+
+    public void setRoutesCoords(String routesCoords) {
+        this.routesCoords = routesCoords;
     }
 }

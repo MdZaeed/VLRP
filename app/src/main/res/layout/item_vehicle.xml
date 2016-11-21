@@ -3,53 +3,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/lightGray"
+    android:background="@android:color/white"
     android:layout_margin="5dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent">
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/tv_vehicle_name_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Vehicle Name: "
+            android:textStyle="bold"/>
         <TextView
             android:id="@+id/tv_vehicle_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="Mock name"/>
+            tools:text="Mock name"
+            android:layout_toRightOf="@id/tv_vehicle_name_static"
+            android:layout_toEndOf="@id/tv_vehicle_name_static"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_driver_name_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Driver Name: "
+            android:textStyle="bold"
+            android:layout_below="@id/tv_vehicle_name_static"/>
 
         <TextView
             android:id="@+id/tv_driver_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mock driver name"
-            android:layout_below="@id/tv_vehicle_name"/>
+            android:layout_below="@id/tv_vehicle_name"
+            android:layout_toRightOf="@id/tv_driver_name_static"
+            android:layout_toEndOf="@id/tv_driver_name_static"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_routes_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Routes: "
+            android:textStyle="bold"
+            android:layout_below="@id/tv_driver_name_static"/>
 
         <TextView
             android:id="@+id/tv_routes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mock Routes"
-            android:layout_below="@id/tv_driver_name" />
+            android:layout_below="@id/tv_driver_name"
+            android:layout_toRightOf="@id/tv_routes_static"
+            android:layout_toEndOf="@id/tv_routes_static"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_trip_time_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Trip Time: "
+            android:textStyle="bold"
+            android:layout_below="@id/tv_routes_static"/>
 
         <TextView
             android:id="@+id/tv_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_routes"
-            android:text="Status" />
+            android:text="Status"
+            android:layout_toRightOf="@id/tv_trip_time_static"
+            android:layout_toEndOf="@id/tv_trip_time_static"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_university_static"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="University: "
+            android:textStyle="bold"
+            android:layout_below="@id/tv_trip_time_static"/>
 
         <TextView
             android:id="@+id/tv_university"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Mock University"
-            android:layout_below="@id/tv_status"/>
+            android:layout_below="@id/tv_status"
+            android:layout_toRightOf="@id/tv_university_static"
+            android:layout_toEndOf="@id/tv_university_static"
+            android:layout_marginLeft="5dp"
+            android:layout_marginStart="5dp"/>
 
         <Button
             android:id="@+id/btn_map"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MAPVIEW"
+            android:text="See Location"
             android:layout_below="@id/tv_university"
             android:background="?attr/selectableItemBackground"/>
     </RelativeLayout>

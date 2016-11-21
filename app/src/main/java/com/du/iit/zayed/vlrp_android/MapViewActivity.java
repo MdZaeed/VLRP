@@ -1,8 +1,13 @@
 package com.du.iit.zayed.vlrp_android;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
@@ -64,10 +70,28 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     Button mapViewButton;
     ApiAdapter apiAdapter;
     DirectionApiAdapter directionApiAdapter;
+    boolean exited=false;
+    Marker drawnMarker;
 
     ArrayList<LocationResponse> locationResponses;
 
     GoogleMap googleMap;
+
+    Handler mHandler;
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                Log.d("Running","Yes");
+                getLocationData(false);
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, 5000);
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,6 +103,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
         apiAdapter=new ApiAdapter();
         directionApiAdapter=new DirectionApiAdapter();
+        mHandler=new Handler(Looper.getMainLooper());
 
         Intent intent=getIntent();
         passedVehicle=(VehicleResponse) intent.getSerializableExtra(MainActivity.PASSED_OBJECT);
@@ -102,7 +127,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         universityTextView=(TextView) findViewById(R.id.tv_university);
         mapViewButton=(Button) findViewById(R.id.btn_map);
 
-        vehicleNameTextView.setText("Noooooooo");
+        vehicleNameTextView.setText("Dummy Driver Name");
         driverNameTextView.setText(passedVehicle.getDriverName());
         routesTextView.setText(passedVehicle.getRoutes());
         statusTextView.setText(passedVehicle.getActiveTime());
@@ -115,13 +140,13 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
         mapView.onResume();
         this.googleMap=googleMap;
 
-        getLocationData();
+        getLocationData(true);
         googleMap.getUiSettings().setAllGesturesEnabled(true);
         googleMap.setOnMarkerClickListener(null);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    public void getLocationData()
+    public void getLocationData(final boolean shouldDrawRoute)
     {
         Call<List<LocationResponse>> call=apiAdapter.vlrpApi.getLocation(Integer.parseInt(passedVehicle.getVehicleId()));
         call.enqueue(new Callback<List<LocationResponse>>() {
@@ -132,9 +157,14 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                     LatLng position = getLatestPosition(locationResponses);
                     Toast.makeText(MapViewActivity.this, position.latitude + "," + position.longitude, Toast.LENGTH_LONG).show();
 
-
 //                LatLng Dhaka=new LatLng(23.7000,90.3667);
-                    setMarker(position);
+                    if(mStatusChecker!=null) {
+                        setMarker(position);
+                    }
+                    if(shouldDrawRoute) {
+                        prepareRouteCoords();
+                        mStatusChecker.run();
+                    }
                 }else
                 {
                     Toast.makeText(MapViewActivity.this,"Sorry, no location available", Toast.LENGTH_LONG).show();
@@ -148,15 +178,30 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 LatLng Dhaka=new LatLng(23.728560,90.400099);
                 setMarker(Dhaka);
 
-                drawRoutes();
+                drawRoutes("23.732527,90.395915","23.728208,90.403607");
 
             }
         });
     }
 
-    public void drawRoutes()
+    public void prepareRouteCoords()
     {
-        Call<DirectionResponse> call=directionApiAdapter.directionApi.getAllVehicle("23.732527,90.395915","23.728208,90.403607",getString(R.string.new_map_key));
+        String coords=passedVehicle.getRoutesCoords();
+        if(null!=coords) {
+            String[] partCoords = coords.split(";");
+            if (partCoords.length > 1) {
+                for (int i = 1; i < partCoords.length; i++) {
+                    drawRoutes(partCoords[i], partCoords[i - 1]);
+                }
+            } else {
+                Toast.makeText(this, "Sorry, cannot draw any routes", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    public void drawRoutes(String origin, String destination)
+    {
+        Call<DirectionResponse> call=directionApiAdapter.directionApi.getAllVehicle(origin,destination,getString(R.string.new_map_key));
         call.enqueue(new Callback<DirectionResponse>() {
             @Override
             public void onResponse(Response<DirectionResponse> response, Retrofit retrofit) {
@@ -175,7 +220,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
             public void onFailure(Throwable t) {
                 Toast.makeText(MapViewActivity.this,"Failed again",Toast.LENGTH_LONG).show();
                 t.printStackTrace();
-
+                int i=0;
             }
         });
     }
@@ -193,16 +238,27 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
 
     private void setMarker(LatLng marker)
     {
-        CameraPosition cameraPosition=new CameraPosition.Builder()
-                .zoom(15)
-                .target(marker)
-                .build();
-        googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        if(drawnMarker==null) {
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .zoom(15)
+                    .target(marker)
+                    .build();
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        } else
+        {
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(marker)
+                    .build();
+            googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            drawnMarker.remove();
+        }
 
         MarkerOptions endMarkerOption = new MarkerOptions().position(marker)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-        googleMap.addMarker(endMarkerOption);
-        mapView.onResume();
+        drawnMarker=googleMap.addMarker(endMarkerOption);
+        if(null!=mapView) {
+            mapView.onResume();
+        }
     }
 
     private LatLng getLatestPosition(ArrayList<LocationResponse> locationResponses) {
@@ -230,6 +286,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public final void onDestroy() {
         if (mapView != null) {
             mapView.onDestroy();
+            mStatusChecker=null;
         }
         super.onDestroy();
     }
@@ -244,6 +301,7 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
     public final void onPause() {
         if (mapView != null) {
             mapView.onPause();
+            mStatusChecker=null;
         }
         super.onPause();
     }
@@ -282,6 +340,8 @@ public class MapViewActivity extends AppCompatActivity implements OnMapReadyCall
                 break;
 
             case android.R.id.home:
+                mStatusChecker=null;
+                exited=true;
                 finish();
                 break;
         }
