@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         switch (view.getId())
         {
             case R.id.btn_login:
-/*                LoginPost loginPost=new LoginPost(usernameEditText.getText().toString(),passwordEditText.getText().toString());
+                LoginPost loginPost=new LoginPost(usernameEditText.getText().toString(),passwordEditText.getText().toString());
 
                 ApiAdapter apiAdapter=new ApiAdapter();
                 Call<LoginResponse> call=apiAdapter.vlrpApi.login(loginPost);
@@ -83,10 +83,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     public void onFailure(Throwable t) {
                         Toast.makeText(LoginActivity.this,"Failed",Toast.LENGTH_LONG).show();
                     }
-                });*/
+                });
 
-                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-                startActivity(intent);
+/*                Intent intent=new Intent(LoginActivity.this,MainActivity.class);
+                startActivity(intent);*/
                 break;
 
             case R.id.tv_redirect_to_register:

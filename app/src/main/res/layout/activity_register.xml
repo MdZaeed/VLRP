@@ -11,31 +11,37 @@
         android:padding="16dp">
 
         <EditText
+            android:id="@+id/et_full_name_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/full_name" />
 
         <EditText
+            android:id="@+id/et_department_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/department" />
 
         <EditText
+            android:id="@+id/et_institute_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/institute" />
 
-        <Spinner
+        <EditText
+            android:id="@+id/et_university_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:entries="@array/filter_array" />
+            android:hint="University"/>
 
         <EditText
+            android:id="@+id/et_email_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email" />
 
         <EditText
+            android:id="@+id/et_password_reg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/password" />

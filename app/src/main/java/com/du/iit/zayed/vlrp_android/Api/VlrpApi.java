@@ -4,7 +4,10 @@ import com.du.iit.zayed.vlrp_android.models.FavoritesModel;
 import com.du.iit.zayed.vlrp_android.models.LocationResponse;
 import com.du.iit.zayed.vlrp_android.models.LoginPost;
 import com.du.iit.zayed.vlrp_android.models.LoginResponse;
+import com.du.iit.zayed.vlrp_android.models.RegisterPostModel;
 import com.du.iit.zayed.vlrp_android.models.VehicleResponse;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -34,4 +37,7 @@ public interface VlrpApi {
 
     @POST("/api/removefavorites")
     Call<LoginResponse> removeFavorites(@Header("Auth-key") String authkey,@Body FavoritesModel favoritesModel);
+
+    @POST("api/resgister")
+    Call<JSONObject> register(@Body RegisterPostModel registerPostModel);
 }
